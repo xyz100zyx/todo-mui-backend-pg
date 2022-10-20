@@ -10,7 +10,7 @@ app.use(cors({
 }))
 
 app.use('/auth', userRouter);
-app.use('/userId', projectRouter);
+app.use('/', projectRouter);
 app.get('/', (req, res) => {
     res.json({
         status: 'success'

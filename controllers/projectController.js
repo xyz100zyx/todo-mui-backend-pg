@@ -3,7 +3,8 @@ import db from "../db.js";
 class ProjectController {
   async create(req, res) {
     try {
-      const { title, userId } = req.body;
+      const { title } = req.body;
+      const userId = Number.parseInt(req.params.userId);
 
       const project = await db
         .query(
@@ -26,17 +27,17 @@ class ProjectController {
 
   async delete(req, res) {
     try {
-      const { title, userId } = req.body;
+      const { title } = req.body;
+      const userId = req.params.userId;
       await db.query(
         `delete from projects
                 where title = ($1) and user_id=($2)`,
         [title, userId]
       );
 
-      const newProjects = await db.query(
-        `select * from projects where user_id=($1)`,
-        [userId])
-        .then(data => data.rows);
+      const newProjects = await db
+        .query(`select * from projects where user_id=($1)`, [userId])
+        .then((data) => data.rows);
 
       res.status(200).json(newProjects);
     } catch (err) {

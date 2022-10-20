@@ -2,8 +2,8 @@ import { Router } from "express";
 import ProjectController from '../controllers/projectController.js';
 
 const router = new Router()
-router.post('/create', ProjectController.create)
-router.delete('/delete', ProjectController.delete);
+router.post('/:userId/create', ProjectController.create)
+router.delete('/:userId/delete', ProjectController.delete);
 
 
 export default router;
