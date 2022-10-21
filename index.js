@@ -1,6 +1,7 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser'
 import userRouter from './routes/userRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import taskRouter from './routes/taskRoutes.js';
@@ -12,6 +13,7 @@ app.use(express.json())
 app.use(cors({
     origin: 'localhost:3000',
 }))
+app.use(cookieParser())
 
 app.use('/auth', userRouter);
 app.use('/', projectRouter);

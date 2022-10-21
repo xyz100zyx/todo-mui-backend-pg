@@ -21,3 +21,19 @@ CREATE TABLE tasks
     t_priority TEXT,
     t_description TEXT,
 )
+
+CREATE TABLE tasks
+(
+    id serial primary key ,
+    description text,
+    time_to_pass text,
+    priority text,
+    project_id integer,
+    foreign key (project_id) references projects (id)
+
+)
+
+CREATE TABLE tokens
+(
+    refresh_token text
+)
