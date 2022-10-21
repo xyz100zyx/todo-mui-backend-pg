@@ -17,40 +17,17 @@ export class UserController {
         )
         .then((data) => data.rows[0]);
 
-        if(!user){
-          res.status(400).json({
-            message: "Isn't valid email,password or name",
-          });
-        }
-
-      // const refreshToken = await jwt.sign(
-      //   {
-      //     id: user.id,
-      //   },
-      //   process.env.REFRESH_TOKEN_SECRET,
-      //   { expiresIn: process.env.REFRESH_TOKEN_EXPIRES }
-      // );
-
-      // if (!refreshToken) {
-      //   res.status(401).json({
-      //     message: `Can not register. Please retry later`,
-      //   });
-      // }
-
-      // await db.query(
-      //   `
-      //     insert into tokens (refresh_token, user_id) values ($1, $2)
-      //   `,
-      //   [refreshToken, user.id]
-      // );
+      if (!user) {
+        res.status(400).json({
+          message: "Isn't valid email,password or name",
+        });
+      }
 
       const { password, ...userData } = user;
 
       res.status(200).json({
         ...userData,
-        // refreshToken,
       });
-
     } catch (err) {
       console.log(err);
       res.status(500).json({
@@ -84,29 +61,33 @@ export class UserController {
         throw new Error("Incorrect email or password");
       }
 
-      const accessToken = await jwt.sign({
-        id: user.id,
-      }, process.env.ACCESS_SECRET_TOKEN, {expiresIn: process.env.ACCESS_TOKEN_EXPIRES})
+      const accessToken = await jwt.sign(
+        {
+          id: user.id,
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn: process.env.ACCESS_TOKEN_EXPIRES }
+      );
 
-      const refreshToken = await jwt.sign({
-        id: user.id,
-      }, process.env.REFRESH_SECRET_TOKEN, {expiresIn: process.env.REFRESH_TOKEN_EXPIRES})
-
+      const refreshToken = await jwt.sign(
+        {
+          id: user.id,
+        },
+        process.env.REFRESH_TOKEN_SECRET,
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRES }
+      );
 
       await db.query(
         `
           insert into tokens (refresh_token, user_id) values ($1, $2)
         `,
         [refreshToken, user.id]
-        );
-
-        req.cookie('access-token', accessToken);
+      );
 
       res.json({
         ...user,
         accessToken,
       });
-
     } catch (err) {
       console.log(err);
       res.status(500).json({

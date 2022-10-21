@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import userRouter from './routes/userRoutes.js';
 import projectRouter from './routes/projectRoutes.js';
 import taskRouter from './routes/taskRoutes.js';
+import authCheck from './utils/authCheck.js';
 
 dotenv.config()
 
@@ -16,8 +17,8 @@ app.use(cors({
 app.use(cookieParser())
 
 app.use('/auth', userRouter);
-app.use('/', projectRouter);
-app.use('/:userId', taskRouter)
+app.use('/', authCheck, projectRouter);
+app.use('/:userId', authCheck, taskRouter)
 app.get('/', (req, res) => {
     res.json({
         status: 'success'
