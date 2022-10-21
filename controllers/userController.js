@@ -22,9 +22,9 @@ export class UserController {
 
   async login(req, res) {
     try {
-      res.json({
-        message: "is work",
-      });
+        const { email, password} = req.body;
+
+        
     } catch (err) {
       console.log(err);
       res.status(500).json({
