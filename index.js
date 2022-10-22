@@ -18,8 +18,8 @@ app.use(cors({
 app.use(cookieParser())
 
 app.use('/auth', userRouter);
-app.use('/', authCheck, projectRouter);
-app.use('/:userId', authCheck, taskRouter)
+app.use('/', projectRouter); //add middleware authCheck
+app.use('/:userId', taskRouter) //add middleware authCheck
 app.get('/', (req, res) => {
     res.json({
         status: 'success'

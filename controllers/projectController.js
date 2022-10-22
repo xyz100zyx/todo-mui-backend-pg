@@ -48,6 +48,32 @@ class ProjectController {
       });
     }
   }
+
+  async getAll(req,res) {
+    try{
+      
+      const userId = req.params.userId;
+
+      const projects = await db.query(
+        `select * from projects where user_id=($1)`,
+        [userId]
+      ).then(data => data.rows)
+
+      console.log(projects)
+
+      res.json({
+        projects
+      })
+
+    }catch(err){
+      console.log(err);
+      res.status(500).json({
+        message: `Can not get projects`,
+        ...err,
+      });
+    }
+  }
+
 }
 
 export default new ProjectController();
