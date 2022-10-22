@@ -35,5 +35,8 @@ CREATE TABLE tasks
 
 CREATE TABLE tokens
 (
-    refresh_token text
+    refresh_token text,
+    user_id integer,
+    foreign key (user_id) references users (id)
 )
+
