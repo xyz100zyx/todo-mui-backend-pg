@@ -1,6 +1,28 @@
 import db from "../db.js";
 
 class TaskController {
+
+  async getAll(req, res){
+    try{
+      const projectId = req.params.projectId;
+      const tasks = await db.query(
+        `select * from tasks where project_id=($1)`,
+        [projectId]
+      ).then(data => data.rows)
+
+      console.log(tasks)
+        res.json({
+          tasks
+        })
+
+    }catch(err){
+      console.log(err);
+      res.status(500).json({
+        message: "Can not get list of tasks",
+      });  
+    }
+  }
+
   async create(req, res) {
     try {
       const projectId = req.params.projectId;
