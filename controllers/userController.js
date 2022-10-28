@@ -69,6 +69,8 @@ export class UserController {
         { expiresIn: process.env.ACCESS_TOKEN_EXPIRES }
       );
 
+      req.headers.Authorization = await `Bearer ${accessToken}`
+
       const refreshToken = await jwt.sign(
         {
           id: user.id,

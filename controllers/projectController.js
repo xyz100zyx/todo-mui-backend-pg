@@ -4,7 +4,14 @@ class ProjectController {
   async create(req, res) {
     try {
       const { title } = req.body;
-      const userId = Number.parseInt(req.params.userId);
+      /*const userId = Number.parseInt(req.params.userId);*/
+      const userId = req.userId;
+
+      if(!userId){
+        res.status(401).json({
+          message: 'Unauthorized error :('
+        })
+      }
 
       const project = await db
         .query(
@@ -27,12 +34,26 @@ class ProjectController {
 
   async delete(req, res) {
     try {
-      const { title } = req.body;
-      const userId = req.params.userId;
+      const { projectId } = req.body;
+      /*const userId = req.params.userId;*/
+
+      const userId = req.userId;
+
+      if(!userId){
+        res.status(401).json({
+          message: 'Unauthorized error :('
+        })
+      }
+
+      await db.query(
+          `delete from tasks
+            where project_id=($1)`,
+          [projectId]
+      );
       await db.query(
         `delete from projects
-                where title = ($1) and user_id=($2)`,
-        [title, userId]
+                where id = ($1) and user_id=($2)`,
+        [projectId, userId]
       );
 
       const newProjects = await db
@@ -51,15 +72,19 @@ class ProjectController {
 
   async getAll(req,res) {
     try{
-      
-      const userId = req.params.userId;
+      const userId = req.userId;
+
+
+      if(!userId){
+        res.status(401).json({
+          message: 'Unauthorized error :('
+        })
+      }
 
       const projects = await db.query(
         `select * from projects where user_id=($1)`,
         [userId]
       ).then(data => data.rows)
-
-      console.log(projects)
 
       res.json({
         projects

@@ -26,12 +26,12 @@ class TaskController {
   async create(req, res) {
     try {
       const projectId = req.params.projectId;
-      const { taskDescription, timeToPass, priority } = req.body;
+      const { description, timeToPass, priority } = req.body;
 
       const task = await db
         .query(
           `insert into tasks (project_id, description, time_to_pass, priority) values ($1, $2, $3, $4) RETURNING *`,
-          [projectId, taskDescription, timeToPass, priority]
+          [projectId, description, timeToPass, priority]
         )
         .then((data) => data.rows[0]);
 
@@ -49,12 +49,18 @@ class TaskController {
   async delete(req, res) {
     try {
       const projectId = req.params.projectId;
-      const taskId = req.body.id;
+      const taskId = req.body.taskId;
 
       await db.query(
         `delete from tasks where project_id = ($1) and id = ($2)`,
         [projectId, taskId]
       );
+
+      console.log(taskId)
+
+      res.json({
+        success: true,
+      })
     } catch (err) {
       console.log(err);
       res.status(500).json({
